@@ -32,6 +32,12 @@ let CategoriesController = class CategoriesController {
             },
         });
     }
+    findAll(user) {
+        return this.prisma.category.findMany({
+            where: { tenantId: user.tenantId },
+            orderBy: { name: 'asc' }
+        });
+    }
 };
 exports.CategoriesController = CategoriesController;
 __decorate([
@@ -44,6 +50,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], CategoriesController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CategoriesController.prototype, "findAll", null);
 exports.CategoriesController = CategoriesController = __decorate([
     (0, common_1.Controller)('categories'),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])

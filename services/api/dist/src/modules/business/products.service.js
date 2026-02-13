@@ -29,6 +29,9 @@ let ProductsService = class ProductsService {
     async findAll(user) {
         return this.prisma.product.findMany({
             where: { tenantId: user.tenantId },
+            include: {
+                category: true
+            },
         });
     }
 };

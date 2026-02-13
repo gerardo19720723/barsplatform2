@@ -7,9 +7,16 @@ export declare class CategoriesController {
         icon?: string;
     }, user: any): import(".prisma/client").Prisma.Prisma__CategoryClient<{
         id: string;
-        tenantId: string;
-        createdAt: Date;
         name: string;
         icon: string | null;
+        createdAt: Date;
+        tenantId: string;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    findAll(user: any): import(".prisma/client").Prisma.PrismaPromise<{
+        id: string;
+        name: string;
+        icon: string | null;
+        createdAt: Date;
+        tenantId: string;
+    }[]>;
 }

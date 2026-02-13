@@ -23,6 +23,9 @@ export class ProductsService {
     // El usuario solo verá productos de SU tenant
     return this.prisma.product.findMany({
       where: { tenantId: user.tenantId },
+       include: { 
+        category: true 
+      },
     });
   }
 }

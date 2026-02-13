@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../../guards/roles.guard';
@@ -19,6 +19,15 @@ export class CategoriesController {
         icon: body.icon || 'default',
         tenantId: user.tenantId, // Se asigna automáticamente al bar de Juan
       },
+    });
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  findAll(@CurrentUser() user: any) {
+    return this.prisma.category.findMany({
+      where: { tenantId: user.tenantId }, // Solo categorías de Juan
+      orderBy: { name: 'asc' }
     });
   }
 }

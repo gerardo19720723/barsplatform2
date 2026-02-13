@@ -2,20 +2,18 @@ import axios from 'axios';
 
 // 1. Configuración base
 export const api = axios.create({
-  baseURL: 'http://localhost:3001', // Tu Backend NestJS
+  baseURL: 'http://localhost:3001',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// 2. Interceptor para inyectar el Token automáticamente
-// (Por ahora, pegaremos el token manualmente para probar rápido)
+// 2. Define tu Token aquí
 const JUAN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5wZXJlekBsYWNhbnRpbmEuY29tIiwic3ViIjoiY21sa3BvbjMzMDAwM2pkcm81Y2F0NGYyaiIsInJvbGUiOiJPV05FUiIsInRlbmFudElkIjoiY21sa3BsOTFkMDAwMWpkcm9nOGthdDY5aiIsImlhdCI6MTc3MDk3NjY2OCwiZXhwIjoxNzcxMDYzMDY4fQ.R4tqiC_phEFUnWuLz3bzdSYRyqqQLXEmS86wZFNgUuE"; 
 
+// 3. Interceptor: Esto añade el token a TODAS las peticiones
 api.interceptors.request.use((config) => {
-  // Si el token existe, lo agregamos al header
-  if (JUAN_TOKEN && JUAN_TOKEN !== "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5wZXJlekBsYWNhbnRpbmEuY29tIiwic3ViIjoiY21sa3BvbjMzMDAwM2pkcm81Y2F0NGYyaiIsInJvbGUiOiJPV05FUiIsInRlbmFudElkIjoiY21sa3BsOTFkMDAwMWpkcm9nOGthdDY5aiIsImlhdCI6MTc3MDk3NjY2OCwiZXhwIjoxNzcxMDYzMDY4fQ.R4tqiC_phEFUnWuLz3bzdSYRyqqQLXEmS86wZFNgUuE") {
-    config.headers.Authorization = `Bearer ${JUAN_TOKEN}`;
-  }
+  // Aquí ES DONDE se usa JUAN_TOKEN (por eso TypeScript se quejaba si faltaba esta línea)
+  config.headers.Authorization = `Bearer ${JUAN_TOKEN}`;
   return config;
 });

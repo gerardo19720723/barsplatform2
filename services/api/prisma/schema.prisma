@@ -19,6 +19,7 @@ model Tenant {
   business  Business?
   products  Product[]
   categories Category[]
+  ingredients Ingredient[]
 }
 
 model User {
@@ -61,17 +62,43 @@ model Category {
   createdAt DateTime  @default(now())
 }
 
+model Ingredient {
+  id        String   @id @default(cuid())
+  name      String   // Ej: "Pan de Hamburguesa"
+  unit      String   // Ej: "Unidad", "Kg", "Litro"
+  stock     Float    @default(0) // Cantidad disponible
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+
+  // Relación: Un ingrediente se usa en muchos productos (recetas)
+  recipes   ProductIngredient[]
+}
+
+model ProductIngredient {
+  id           String     @id @default(cuid())
+  productId    String
+  product      Product    @relation(fields: [productId], references: [id])
+  
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  
+  quantity     Float      // Cuánto se necesita (ej: 0.15 kg de carne)
+
+  @@unique([productId, ingredientId])
+}
+
 model Product {
   id        String   @id @default(cuid())
   name      String
   price     Float
   
-  // CAMBIO CRÍTICO: Ya no es un String, es una relación
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
 
   tenantId  String
   tenant    Tenant   @relation(fields: [tenantId], references: [id])
+
+  ingredients ProductIngredient[]
   
   createdAt DateTime @default(now())
 }
