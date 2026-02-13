@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "name": "Bars Client",
+    "slug": "bars-client",
+    "version": "1.0.0",
+    "scheme": "barsclient"
+  }
+}

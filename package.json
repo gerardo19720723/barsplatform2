@@ -1,0 +1,20 @@
+{
+  "name": "bars-platform2",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --prefix services/api && npm install --prefix apps/platform-admin && npm install --prefix apps/client-app",
+    "dev:api": "npm run start:dev --prefix services/api",
+    "dev:admin": "npm run dev --prefix apps/platform-admin",
+    "dev:client": "npm start --prefix apps/client-app"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
