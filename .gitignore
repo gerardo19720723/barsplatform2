@@ -1,0 +1,19 @@
+gerar@Desktop-Ray:~/barsplatform2$ git init
+Reinitialized existing Git repository in /home/gerar/barsplatform2/.git/
+gerar@Desktop-Ray:~/barsplatform2$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   fix_tsconfig.sh
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        apps/
+        node_modules/
+        package-lock.json
+        package.json
+        packages/
+        services/
