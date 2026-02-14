@@ -15,6 +15,7 @@ const auth_module_1 = require("./modules/auth/auth.module");
 const tenants_module_1 = require("./modules/tenants/tenants.module");
 const users_module_1 = require("./modules/users/users.module");
 const business_module_1 = require("./modules/business/business.module");
+const ingredients_module_1 = require("./modules/ingredients/ingredients.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const app_controller_1 = require("./app.controller");
 let AppModule = class AppModule {
@@ -33,6 +34,7 @@ exports.AppModule = AppModule = __decorate([
             tenants_module_1.TenantModule,
             users_module_1.UsersModule,
             business_module_1.BusinessModule,
+            ingredients_module_1.IngredientsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

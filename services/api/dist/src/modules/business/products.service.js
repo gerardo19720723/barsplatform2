@@ -30,8 +30,69 @@ let ProductsService = class ProductsService {
         return this.prisma.product.findMany({
             where: { tenantId: user.tenantId },
             include: {
-                category: true
+                category: true,
+                ingredients: {
+                    include: {
+                        ingredient: true
+                    }
+                }
             },
+        });
+    }
+    async addIngredientToRecipe(data) {
+        return this.prisma.productIngredient.create({
+            data: {
+                productId: data.productId,
+                ingredientId: data.ingredientId,
+                quantity: data.quantity,
+            },
+            include: {
+                ingredient: true
+            }
+        });
+    }
+    async removeIngredientFromRecipe(productId, ingredientId) {
+        return this.prisma.productIngredient.deleteMany({
+            where: {
+                productId: productId,
+                ingredientId: ingredientId,
+            },
+        });
+    }
+    async sellProduct(productId) {
+        return this.prisma.$transaction(async (tx) => {
+            const product = await tx.product.findUnique({
+                where: { id: productId },
+                include: {
+                    ingredients: {
+                        include: {
+                            ingredient: true
+                        }
+                    }
+                }
+            });
+            if (!product) {
+                throw new Error('Producto no encontrado');
+            }
+            for (const item of product.ingredients) {
+                const currentIngredient = await tx.ingredient.findUnique({
+                    where: { id: item.ingredientId }
+                });
+                if (!currentIngredient)
+                    continue;
+                const newStock = currentIngredient.stock - item.quantity;
+                if (newStock < 0) {
+                    throw new Error(`Stock insuficiente para: ${currentIngredient.name} (Quedan ${currentIngredient.stock})`);
+                }
+                await tx.ingredient.update({
+                    where: { id: item.ingredientId },
+                    data: { stock: newStock }
+                });
+            }
+            return {
+                message: 'Venta realizada exitosamente',
+                product: product.name
+            };
         });
     }
 };

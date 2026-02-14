@@ -30,6 +30,15 @@ let ProductsController = class ProductsController {
     findAll(user) {
         return this.productsService.findAll(user);
     }
+    addIngredientToRecipe(body) {
+        return this.productsService.addIngredientToRecipe(body);
+    }
+    removeIngredientFromRecipe(body) {
+        return this.productsService.removeIngredientFromRecipe(body.productId, body.ingredientId);
+    }
+    sell(body) {
+        return this.productsService.sellProduct(body.productId);
+    }
 };
 exports.ProductsController = ProductsController;
 __decorate([
@@ -50,6 +59,33 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Post)('recipe'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('OWNER', 'ADMIN'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "addIngredientToRecipe", null);
+__decorate([
+    (0, common_1.Delete)('recipe'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('OWNER', 'ADMIN'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "removeIngredientFromRecipe", null);
+__decorate([
+    (0, common_1.Post)('sell'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('OWNER', 'ADMIN', 'STAFF'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "sell", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, common_1.Controller)('products'),
     __metadata("design:paramtypes", [products_service_1.ProductsService])

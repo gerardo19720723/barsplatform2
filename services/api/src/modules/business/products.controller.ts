@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Delete } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -22,5 +22,25 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   findAll(@CurrentUser() user: any) {
     return this.productsService.findAll(user);
+  }
+
+  @Post('recipe')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN')
+  addIngredientToRecipe(@Body() body: { productId: string; ingredientId: string; quantity: number }) {
+  return this.productsService.addIngredientToRecipe(body);
+  }
+
+  @Delete('recipe')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN')
+  removeIngredientFromRecipe(@Body() body: { productId: string; ingredientId: string }) {
+    return this.productsService.removeIngredientFromRecipe(body.productId, body.ingredientId);
+  }
+    @Post('sell')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('OWNER', 'ADMIN', 'STAFF')
+  sell(@Body() body: { productId: string }) {
+    return this.productsService.sellProduct(body.productId);
   }
 }

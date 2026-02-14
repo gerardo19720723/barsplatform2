@@ -19,6 +19,20 @@ export declare class ProductsController {
             tenantId: string;
             icon: string | null;
         };
+        ingredients: ({
+            ingredient: {
+                id: string;
+                name: string;
+                tenantId: string;
+                unit: string;
+                stock: number;
+            };
+        } & {
+            id: string;
+            productId: string;
+            ingredientId: string;
+            quantity: number;
+        })[];
     } & {
         id: string;
         name: string;
@@ -27,4 +41,32 @@ export declare class ProductsController {
         categoryId: string | null;
         tenantId: string;
     })[]>;
+    addIngredientToRecipe(body: {
+        productId: string;
+        ingredientId: string;
+        quantity: number;
+    }): Promise<{
+        ingredient: {
+            id: string;
+            name: string;
+            tenantId: string;
+            unit: string;
+            stock: number;
+        };
+    } & {
+        id: string;
+        productId: string;
+        ingredientId: string;
+        quantity: number;
+    }>;
+    removeIngredientFromRecipe(body: {
+        productId: string;
+        ingredientId: string;
+    }): Promise<import(".prisma/client").Prisma.BatchPayload>;
+    sell(body: {
+        productId: string;
+    }): Promise<{
+        message: string;
+        product: string;
+    }>;
 }

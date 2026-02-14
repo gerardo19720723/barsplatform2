@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { TenantModule } from './modules/tenants/tenants.module';
 import { UsersModule } from './modules/users/users.module';
 import { BusinessModule } from './modules/business/business.module';
+import { IngredientsModule } from './modules/ingredients/ingredients.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AppController } from './app.controller'; // <--- AGREGAR ESTO
 
@@ -21,8 +22,9 @@ import { AppController } from './app.controller'; // <--- AGREGAR ESTO
     TenantModule,
     UsersModule,
     BusinessModule,
+    IngredientsModule,
   ],
-  controllers: [AppController], // <--- AGREGAR ESTO
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
