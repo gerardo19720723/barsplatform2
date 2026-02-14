@@ -26,14 +26,22 @@ interface Ingredient {
   stock: number;
 }
 
+interface Order {
+  id: string;
+  total: number;
+  createdAt: string;
+  items: { product: { name: string }; quantity: number; price: number }[];
+}
+
 function App() {
   // Estados
-  const [view, setView] = useState<'menu' | 'inventory'>('menu'); // Control de Pestañas
-  
+  // ✅ CORRECCIÓN: Agregado 'history' a los tipos permitidos
+  const [view, setView] = useState<'menu' | 'inventory' | 'history'>('menu');
+  const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  
+   
   const [loading, setLoading] = useState(true);
 
   // Formulario Producto
@@ -58,10 +66,26 @@ function App() {
     setIngredients(response.data);
   };
 
-  useEffect(() => {
+  // ✅ CORRECCIÓN: Definición única y correcta de loadOrders
+  const loadOrders = async () => {
+    try {
+      const response = await api.get('/orders');
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Error cargando historial", error);
+    }
+  };
+
+    useEffect(() => {
     const init = async () => {
-      await Promise.all([loadProducts(), loadCategories(), loadIngredients()]);
-      setLoading(false);
+      try {
+        await Promise.all([loadProducts(), loadCategories(), loadIngredients(), loadOrders()]);
+      } catch (error) {
+        console.error("Error cargando datos iniciales:", error);
+        // No hacemos nada, permitimos que la app cargue aunque falle algo
+      } finally {
+        setLoading(false); // Esto SIEMPRE se ejecuta, falle o no
+      }
     };
     init();
   }, []);
@@ -102,7 +126,11 @@ function App() {
     try {
       await api.post(`/products/${productId}/sell`);
       alert(`✅ Vendido: ${productName}`);
-      loadIngredients(); // Recargamos ingredientes para ver el stock bajar
+      
+      // ✅ CORRECCIÓN: Recargar todo para ver cambios en stock y en historial
+      loadIngredients(); 
+      loadOrders();
+      
     } catch (error: any) {
       alert(`❌ Error: ${error.response?.data?.message || 'No se pudo vender'}`);
     }
@@ -130,33 +158,58 @@ function App() {
       <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>
         <button 
           onClick={() => setView('menu')}
-          style={{ 
-            padding: '10px 20px', 
-            background: view === 'menu' ? '#007bff' : '#f0f0f0', 
-            color: view === 'menu' ? 'white' : 'black', 
-            border: 'none', 
-            borderRadius: '5px', 
-            cursor: 'pointer', 
-            fontWeight: 'bold' 
-          }}
+          style={view === 'menu' ? activeBtnStyle : btnStyle}
         >
           📋 Menú
         </button>
         <button 
           onClick={() => setView('inventory')}
-          style={{ 
-            padding: '10px 20px', 
-            background: view === 'inventory' ? '#28a745' : '#f0f0f0', 
-            color: view === 'inventory' ? 'white' : 'black', 
-            border: 'none', 
-            borderRadius: '5px', 
-            cursor: 'pointer', 
-            fontWeight: 'bold' 
-          }}
+          style={view === 'inventory' ? activeBtnStyle : btnStyle}
         >
           📦 Almacén (Stock)
         </button>
+
+        {/* BOTÓN HISTORIAL */}
+        <button 
+          onClick={() => setView('history')} 
+          style={view === 'history' ? activeBtnStyle : btnStyle}
+        >
+          🕒 Historial
+        </button>
       </div>
+
+       {/* VISTA: HISTORIAL DE VENTAS */}
+      {view === 'history' && (
+        <div>
+          <h2>🕒 Historial de Ventas</h2>
+          <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
+            <thead>
+              <tr style={{ background: '#f8f9fa', textAlign: 'left' }}>
+                <th style={thStyle}>Fecha</th>
+                <th style={thStyle}>Producto</th>
+                <th style={thStyle}>Cantidad</th>
+                <th style={thStyle}>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.length === 0 ? (
+                <tr><td colSpan={4} style={{textAlign: 'center', padding: '20px'}}>No hay ventas registradas aún.</td></tr>
+              ) : (
+                orders.map(order => (
+                  <tr key={order.id} style={{ borderBottom: '1px solid #eee' }}>
+                    <td style={tdStyle}>{new Date(order.createdAt).toLocaleString()}</td>
+                    <td style={tdStyle}>
+                      {order.items.map(item => item.product.name).join(', ')}
+                    </td>
+                    <td style={tdStyle}>{order.items.reduce((acc, item) => acc + item.quantity, 0)}</td>
+                    <td style={{...tdStyle, fontWeight: 'bold', color: 'green'}}>${order.total.toFixed(2)}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* VISTA: MENÚ */}
       {view === 'menu' && (
@@ -255,21 +308,22 @@ function App() {
 }
 
 // Estilos reutilizables
-// Estilos reutilizables
 const inputStyle = { padding: '8px', borderRadius: '4px', border: '1px solid #ccc', color: 'black', backgroundColor: 'white' };
-const btnStyle = { padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', color: 'white' };
+const btnStyle = { padding: '10px 20px', background: '#f0f0f0', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' };
 
-// ✅ ACTUALIZAR thStyle y tdStyle con color forzado
+// ✅ ESTILO FALTANTE PARA EL BOTÓN ACTIVO
+const activeBtnStyle = { padding: '10px 20px', background: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' };
+
 const thStyle = { 
   padding: '12px', 
   borderBottom: '2px solid #ddd',
-  color: '#333', // <--- Forzar color oscuro
+  color: '#333', 
   fontWeight: 'bold'
 };
 const tdStyle = { 
   padding: '12px', 
   borderBottom: '1px solid #eee',
-  color: '#333'  // <--- Forzar color oscuro
+  color: '#333'  
 };
 
 export default App;

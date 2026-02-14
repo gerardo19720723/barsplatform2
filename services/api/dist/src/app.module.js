@@ -18,6 +18,7 @@ const business_module_1 = require("./modules/business/business.module");
 const ingredients_module_1 = require("./modules/ingredients/ingredients.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const app_controller_1 = require("./app.controller");
+const orders_module_1 = require("./modules/orders/orders.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,6 +36,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             business_module_1.BusinessModule,
             ingredients_module_1.IngredientsModule,
+            orders_module_1.OrdersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

@@ -64,6 +64,6 @@ export declare class ProductsController {
     }): Promise<import(".prisma/client").Prisma.BatchPayload>;
     sellProduct(productId: string): Promise<{
         message: string;
-        product: string;
+        orderId: string;
     }>;
 }

@@ -59,27 +59,20 @@ export class ProductsService {
       },
     });
   }
-    // Vender un producto (Restar stock de ingredientes)
+    // Vender un producto (Restar stock + Guardar Historial)
   async sellProduct(productId: string) {
-    // Usamos $transaction para asegurar que todo se ejecute correctamente
     return this.prisma.$transaction(async (tx) => {
-      // 1. Obtener el producto con su receta completa
+      // 1. Obtener el producto con su receta
       const product = await tx.product.findUnique({
         where: { id: productId },
         include: {
-          ingredients: {
-            include: {
-              ingredient: true
-            }
-          }
+          ingredients: { include: { ingredient: true } }
         }
       });
 
-      if (!product) {
-        throw new Error('Producto no encontrado');
-      }
+      if (!product) throw new Error('Producto no encontrado');
 
-      // 2. Iterar por cada ingrediente de la receta
+      // 2. Verificar y descontar Stock
       for (const item of product.ingredients) {
         const currentIngredient = await tx.ingredient.findUnique({
           where: { id: item.ingredientId }
@@ -89,25 +82,36 @@ export class ProductsService {
 
         const newStock = currentIngredient.stock - item.quantity;
 
-        // 3. Verificar si hay suficiente stock
         if (newStock < 0) {
-          // ✅ MEJORA: Usamos BadRequestException para un error 400 claro
           throw new BadRequestException(
-            `Stock insuficiente para: ${currentIngredient.name}. ` +
-            `Quedan: ${currentIngredient.stock}, Necesario: ${item.quantity}`
+            `Stock insuficiente para: ${currentIngredient.name}. (Quedan ${currentIngredient.stock})`
           );
         }
 
-        // 4. Actualizar el stock en la base de datos
         await tx.ingredient.update({
           where: { id: item.ingredientId },
           data: { stock: newStock }
         });
       }
 
+      // 3. ✅ NUEVO: Crear el Registro de Venta (Order)
+      const order = await tx.order.create({
+        data: {
+          total: product.price, // Por ahora vendemos 1 unidad a la vez
+          tenantId: product.tenantId, // Asumimos que el producto ya tiene el tenantId correcto
+          items: {
+            create: {
+              productId: product.id,
+              quantity: 1,
+              price: product.price // Guardamos el precio histórico
+            }
+          }
+        }
+      });
+
       return { 
-        message: 'Venta realizada exitosamente', 
-        product: product.name 
+        message: 'Venta registrada exitosamente', 
+        orderId: order.id 
       };
     });
   }

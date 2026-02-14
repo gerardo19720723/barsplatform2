@@ -64,16 +64,11 @@ let ProductsService = class ProductsService {
             const product = await tx.product.findUnique({
                 where: { id: productId },
                 include: {
-                    ingredients: {
-                        include: {
-                            ingredient: true
-                        }
-                    }
+                    ingredients: { include: { ingredient: true } }
                 }
             });
-            if (!product) {
+            if (!product)
                 throw new Error('Producto no encontrado');
-            }
             for (const item of product.ingredients) {
                 const currentIngredient = await tx.ingredient.findUnique({
                     where: { id: item.ingredientId }
@@ -82,17 +77,29 @@ let ProductsService = class ProductsService {
                     continue;
                 const newStock = currentIngredient.stock - item.quantity;
                 if (newStock < 0) {
-                    throw new common_1.BadRequestException(`Stock insuficiente para: ${currentIngredient.name}. ` +
-                        `Quedan: ${currentIngredient.stock}, Necesario: ${item.quantity}`);
+                    throw new common_1.BadRequestException(`Stock insuficiente para: ${currentIngredient.name}. (Quedan ${currentIngredient.stock})`);
                 }
                 await tx.ingredient.update({
                     where: { id: item.ingredientId },
                     data: { stock: newStock }
                 });
             }
+            const order = await tx.order.create({
+                data: {
+                    total: product.price,
+                    tenantId: product.tenantId,
+                    items: {
+                        create: {
+                            productId: product.id,
+                            quantity: 1,
+                            price: product.price
+                        }
+                    }
+                }
+            });
             return {
-                message: 'Venta realizada exitosamente',
-                product: product.name
+                message: 'Venta registrada exitosamente',
+                orderId: order.id
             };
         });
     }

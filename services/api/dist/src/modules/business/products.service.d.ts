@@ -62,6 +62,6 @@ export declare class ProductsService {
     removeIngredientFromRecipe(productId: string, ingredientId: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
     sellProduct(productId: string): Promise<{
         message: string;
-        product: string;
+        orderId: string;
     }>;
 }

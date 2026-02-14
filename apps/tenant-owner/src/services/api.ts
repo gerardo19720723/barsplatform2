@@ -9,7 +9,7 @@ export const api = axios.create({
 });
 
 // 2. Define tu Token aquí
-const JUAN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5wZXJlekBsYWNhbnRpbmEuY29tIiwic3ViIjoiY21sa3BvbjMzMDAwM2pkcm81Y2F0NGYyaiIsInJvbGUiOiJPV05FUiIsInRlbmFudElkIjoiY21sa3BsOTFkMDAwMWpkcm9nOGthdDY5aiIsImlhdCI6MTc3MDk3NjY2OCwiZXhwIjoxNzcxMDYzMDY4fQ.R4tqiC_phEFUnWuLz3bzdSYRyqqQLXEmS86wZFNgUuE"; 
+const JUAN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5wZXJlekBsYWNhbnRpbmEuY29tIiwic3ViIjoiY21sa3BvbjMzMDAwM2pkcm81Y2F0NGYyaiIsInJvbGUiOiJPV05FUiIsInRlbmFudElkIjoiY21sa3BsOTFkMDAwMWpkcm9nOGthdDY5aiIsImlhdCI6MTc3MTA5Njk2MiwiZXhwIjoxNzcxMTgzMzYyfQ.WApMJoAiV5RBlvEoKKSBhDlQqFhr8xh5iudw67-VtKM"; 
 
 // 3. Interceptor: Esto añade el token a TODAS las peticiones
 api.interceptors.request.use((config) => {

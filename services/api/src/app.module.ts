@@ -9,6 +9,7 @@ import { BusinessModule } from './modules/business/business.module';
 import { IngredientsModule } from './modules/ingredients/ingredients.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AppController } from './app.controller'; // <--- AGREGAR ESTO
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AppController } from './app.controller'; // <--- AGREGAR ESTO
     UsersModule,
     BusinessModule,
     IngredientsModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [
