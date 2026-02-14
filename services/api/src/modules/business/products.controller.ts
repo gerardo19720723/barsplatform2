@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Delete, Param } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -24,11 +24,19 @@ export class ProductsController {
     return this.productsService.findAll(user);
   }
 
-  @Post('recipe')
+  @Post(':id/ingredients')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('OWNER', 'ADMIN')
-  addIngredientToRecipe(@Body() body: { productId: string; ingredientId: string; quantity: number }) {
-  return this.productsService.addIngredientToRecipe(body);
+  addIngredient(
+    @Param('id') productId: string, 
+    @Body() body: { ingredientId: string; quantity: number }
+  ) {
+    // Llamamos al método que ya tienes en tu Service
+    return this.productsService.addIngredientToRecipe({
+      productId: productId,
+      ingredientId: body.ingredientId,
+      quantity: body.quantity
+    });
   }
 
   @Delete('recipe')
@@ -37,10 +45,12 @@ export class ProductsController {
   removeIngredientFromRecipe(@Body() body: { productId: string; ingredientId: string }) {
     return this.productsService.removeIngredientFromRecipe(body.productId, body.ingredientId);
   }
-    @Post('sell')
+  
+  @Post(':id/sell')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('OWNER', 'ADMIN', 'STAFF')
-  sell(@Body() body: { productId: string }) {
-    return this.productsService.sellProduct(body.productId);
+  sellProduct(@Param('id') productId: string) {
+    // Aquí probamos la lógica avanzada de transacciones que escribiste
+    return this.productsService.sellProduct(productId);
   }
 }

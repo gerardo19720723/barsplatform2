@@ -5,41 +5,41 @@ export declare class ProductsService {
     constructor(prisma: PrismaService);
     create(user: any, createProductDto: CreateProductDto): Promise<{
         id: string;
+        tenantId: string;
+        createdAt: Date;
         name: string;
         price: number;
-        createdAt: Date;
         categoryId: string | null;
-        tenantId: string;
     }>;
     findAll(user: any): Promise<({
         category: {
             id: string;
-            name: string;
-            createdAt: Date;
             tenantId: string;
+            createdAt: Date;
+            name: string;
             icon: string | null;
         };
         ingredients: ({
             ingredient: {
                 id: string;
-                name: string;
                 tenantId: string;
+                name: string;
                 unit: string;
                 stock: number;
             };
         } & {
             id: string;
+            quantity: number;
             productId: string;
             ingredientId: string;
-            quantity: number;
         })[];
     } & {
         id: string;
+        tenantId: string;
+        createdAt: Date;
         name: string;
         price: number;
-        createdAt: Date;
         categoryId: string | null;
-        tenantId: string;
     })[]>;
     addIngredientToRecipe(data: {
         productId: string;
@@ -48,16 +48,16 @@ export declare class ProductsService {
     }): Promise<{
         ingredient: {
             id: string;
-            name: string;
             tenantId: string;
+            name: string;
             unit: string;
             stock: number;
         };
     } & {
         id: string;
+        quantity: number;
         productId: string;
         ingredientId: string;
-        quantity: number;
     }>;
     removeIngredientFromRecipe(productId: string, ingredientId: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
     sellProduct(productId: string): Promise<{

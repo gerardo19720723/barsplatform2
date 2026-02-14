@@ -16,20 +16,30 @@ let IngredientsService = class IngredientsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(user, data) {
+    create(user, createIngredientDto) {
         return this.prisma.ingredient.create({
             data: {
-                name: data.name,
-                unit: data.unit,
-                stock: data.stock || 0,
+                name: createIngredientDto.name,
+                unit: createIngredientDto.unit,
+                stock: createIngredientDto.stock,
                 tenantId: user.tenantId,
             },
         });
     }
-    async findAll(user) {
+    findAll(user) {
         return this.prisma.ingredient.findMany({
             where: { tenantId: user.tenantId },
             orderBy: { name: 'asc' },
+        });
+    }
+    updateStock(id, quantityToSubtract) {
+        return this.prisma.ingredient.update({
+            where: { id },
+            data: {
+                stock: {
+                    decrement: quantityToSubtract,
+                },
+            },
         });
     }
 };

@@ -1,27 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+// Asegúrate de que la ruta al DTO sea correcta según donde lo hayas puesto
+import { CreateIngredientDto } from './dto/create-ingredient.dto'; 
 
 @Injectable()
 export class IngredientsService {
   constructor(private prisma: PrismaService) {}
 
-  // Crear un nuevo ingrediente
-  async create(user: any, data: { name: string; unit: string; stock: number }) {
+  create(user: any, createIngredientDto: CreateIngredientDto) {
     return this.prisma.ingredient.create({
       data: {
-        name: data.name,
-        unit: data.unit, // Ej: 'kg', 'unidad', 'litro'
-        stock: data.stock || 0,
-        tenantId: user.tenantId, // Aislamiento por Tenant
+        name: createIngredientDto.name,
+        unit: createIngredientDto.unit,
+        stock: createIngredientDto.stock,
+        tenantId: user.tenantId,
       },
     });
   }
 
-  // Listar todos los ingredientes del bar
-  async findAll(user: any) {
+  findAll(user: any) {
     return this.prisma.ingredient.findMany({
       where: { tenantId: user.tenantId },
       orderBy: { name: 'asc' },
+    });
+  }
+
+  // Útil para el futuro cuando vendamos productos
+  updateStock(id: string, quantityToSubtract: number) {
+    return this.prisma.ingredient.update({
+      where: { id },
+      data: {
+        stock: {
+          decrement: quantityToSubtract,
+        },
+      },
     });
   }
 }

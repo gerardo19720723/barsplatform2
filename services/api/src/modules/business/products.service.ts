@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 
@@ -91,7 +91,11 @@ export class ProductsService {
 
         // 3. Verificar si hay suficiente stock
         if (newStock < 0) {
-          throw new Error(`Stock insuficiente para: ${currentIngredient.name} (Quedan ${currentIngredient.stock})`);
+          // ✅ MEJORA: Usamos BadRequestException para un error 400 claro
+          throw new BadRequestException(
+            `Stock insuficiente para: ${currentIngredient.name}. ` +
+            `Quedan: ${currentIngredient.stock}, Necesario: ${item.quantity}`
+          );
         }
 
         // 4. Actualizar el stock en la base de datos

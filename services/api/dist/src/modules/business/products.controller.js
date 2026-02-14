@@ -30,14 +30,18 @@ let ProductsController = class ProductsController {
     findAll(user) {
         return this.productsService.findAll(user);
     }
-    addIngredientToRecipe(body) {
-        return this.productsService.addIngredientToRecipe(body);
+    addIngredient(productId, body) {
+        return this.productsService.addIngredientToRecipe({
+            productId: productId,
+            ingredientId: body.ingredientId,
+            quantity: body.quantity
+        });
     }
     removeIngredientFromRecipe(body) {
         return this.productsService.removeIngredientFromRecipe(body.productId, body.ingredientId);
     }
-    sell(body) {
-        return this.productsService.sellProduct(body.productId);
+    sellProduct(productId) {
+        return this.productsService.sellProduct(productId);
     }
 };
 exports.ProductsController = ProductsController;
@@ -60,14 +64,15 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Post)('recipe'),
+    (0, common_1.Post)(':id/ingredients'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('OWNER', 'ADMIN'),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
-], ProductsController.prototype, "addIngredientToRecipe", null);
+], ProductsController.prototype, "addIngredient", null);
 __decorate([
     (0, common_1.Delete)('recipe'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
@@ -78,14 +83,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "removeIngredientFromRecipe", null);
 __decorate([
-    (0, common_1.Post)('sell'),
+    (0, common_1.Post)(':id/sell'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('OWNER', 'ADMIN', 'STAFF'),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], ProductsController.prototype, "sell", null);
+], ProductsController.prototype, "sellProduct", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, common_1.Controller)('products'),
     __metadata("design:paramtypes", [products_service_1.ProductsService])

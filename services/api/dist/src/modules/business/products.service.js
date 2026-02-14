@@ -82,7 +82,8 @@ let ProductsService = class ProductsService {
                     continue;
                 const newStock = currentIngredient.stock - item.quantity;
                 if (newStock < 0) {
-                    throw new Error(`Stock insuficiente para: ${currentIngredient.name} (Quedan ${currentIngredient.stock})`);
+                    throw new common_1.BadRequestException(`Stock insuficiente para: ${currentIngredient.name}. ` +
+                        `Quedan: ${currentIngredient.stock}, Necesario: ${item.quantity}`);
                 }
                 await tx.ingredient.update({
                     where: { id: item.ingredientId },

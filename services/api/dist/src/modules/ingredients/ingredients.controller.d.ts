@@ -6,18 +6,18 @@ export declare class IngredientsController {
         name: string;
         unit: string;
         stock: number;
-    }, user: any): Promise<{
+    }, user: any): import(".prisma/client").Prisma.Prisma__IngredientClient<{
         id: string;
+        tenantId: string;
         name: string;
         unit: string;
         stock: number;
-        tenantId: string;
-    }>;
-    findAll(user: any): Promise<{
+    }, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    findAll(user: any): import(".prisma/client").Prisma.PrismaPromise<{
         id: string;
+        tenantId: string;
         name: string;
         unit: string;
         stock: number;
-        tenantId: string;
     }[]>;
 }
