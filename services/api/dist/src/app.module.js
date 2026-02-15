@@ -29,7 +29,7 @@ exports.AppModule = AppModule = __decorate([
             prisma_module_1.PrismaModule,
             throttler_1.ThrottlerModule.forRoot([{
                     ttl: 60000,
-                    limit: 10,
+                    limit: 1000,
                 }]),
             auth_module_1.AuthModule,
             tenants_module_1.TenantModule,

@@ -29,7 +29,7 @@ function App() {
   // Auto-Refresco cada 10 segundos (Simulación de tiempo real)
   useEffect(() => {
     loadOrders();
-    const interval = setInterval(loadOrders, 10000); // 10s
+    const interval = setInterval(loadOrders, 30000); // 10s
     return () => clearInterval(interval);
   }, []);
 

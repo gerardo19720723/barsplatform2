@@ -17,7 +17,7 @@ import { OrdersModule } from './modules/orders/orders.module';
     PrismaModule,
     ThrottlerModule.forRoot([{
       ttl: 60000, 
-      limit: 10, 
+      limit: 1000, 
     }]),
     AuthModule,
     TenantModule,
