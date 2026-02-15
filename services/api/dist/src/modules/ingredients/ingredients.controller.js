@@ -19,12 +19,13 @@ const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const roles_guard_1 = require("../../guards/roles.guard");
 const roles_decorator_1 = require("../../guards/roles.decorator");
 const current_user_decorator_1 = require("../../decorators/current-user.decorator");
+const create_ingredient_dto_1 = require("./dto/create-ingredient.dto");
 let IngredientsController = class IngredientsController {
     constructor(ingredientsService) {
         this.ingredientsService = ingredientsService;
     }
-    create(body, user) {
-        return this.ingredientsService.create(user, body);
+    create(createIngredientDto, user) {
+        return this.ingredientsService.create(user, createIngredientDto);
     }
     findAll(user) {
         return this.ingredientsService.findAll(user);
@@ -38,7 +39,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [create_ingredient_dto_1.CreateIngredientDto, Object]),
     __metadata("design:returntype", void 0)
 ], IngredientsController.prototype, "create", null);
 __decorate([

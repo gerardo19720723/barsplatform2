@@ -22,6 +22,7 @@ let IngredientsService = class IngredientsService {
                 name: createIngredientDto.name,
                 unit: createIngredientDto.unit,
                 stock: createIngredientDto.stock,
+                cost: createIngredientDto.cost,
                 tenantId: user.tenantId,
             },
         });

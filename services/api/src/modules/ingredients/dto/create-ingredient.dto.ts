@@ -9,4 +9,7 @@ export class CreateIngredientDto {
 
   @IsNumber()
   stock: number; // Cantidad inicial
+
+  @IsNumber()
+  cost: number;
 }

@@ -69,12 +69,14 @@ let ProductsService = class ProductsService {
             });
             if (!product)
                 throw new Error('Producto no encontrado');
+            let orderCost = 0;
             for (const item of product.ingredients) {
                 const currentIngredient = await tx.ingredient.findUnique({
                     where: { id: item.ingredientId }
                 });
                 if (!currentIngredient)
                     continue;
+                orderCost += (item.quantity * currentIngredient.cost);
                 const newStock = currentIngredient.stock - item.quantity;
                 if (newStock < 0) {
                     throw new common_1.BadRequestException(`Stock insuficiente para: ${currentIngredient.name}. (Quedan ${currentIngredient.stock})`);
@@ -87,6 +89,7 @@ let ProductsService = class ProductsService {
             const order = await tx.order.create({
                 data: {
                     total: product.price,
+                    totalCost: orderCost,
                     tenantId: product.tenantId,
                     items: {
                         create: {

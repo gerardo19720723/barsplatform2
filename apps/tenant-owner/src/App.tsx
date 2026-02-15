@@ -24,11 +24,13 @@ interface Ingredient {
   name: string;
   unit: string;
   stock: number;
+  cost: number;
 }
 
 interface Order {
   id: string;
   total: number;
+  totalCost: number;
   createdAt: string;
   items: { product: { name: string }; quantity: number; price: number }[];
 }
@@ -41,6 +43,8 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [stats, setStats] = useState({ totalRevenue: 0, totalCost: 0, totalProfit: 0, totalOrders: 0 });
+    const [dateFilter, setDateFilter] = useState({ start: '', end: '' });
    
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +52,7 @@ function App() {
   const [newProduct, setNewProduct] = useState({ name: '', price: '', categoryId: '' });
 
   // Formulario Ingrediente
-  const [newIngredient, setNewIngredient] = useState({ name: '', unit: '', stock: '' });
+  const [newIngredient, setNewIngredient] = useState({ name: '', unit: '', stock: '', cost: '' });
 
   // --- Cargas de Datos ---
   const loadProducts = async () => {
@@ -76,10 +80,30 @@ function App() {
     }
   };
 
+    const loadStats = async () => {
+    try {
+      // Si hay fechas, las pasamos como parámetros
+      const params = dateFilter.start && dateFilter.end ? { 
+        start: dateFilter.start, 
+        end: dateFilter.end 
+      } : {};
+      
+      const response = await api.get('/orders/stats', { params });
+      setStats(response.data);
+    } catch (error) {
+      console.error("Error cargando estadísticas", error);
+    }
+  };
+
     useEffect(() => {
     const init = async () => {
       try {
-        await Promise.all([loadProducts(), loadCategories(), loadIngredients(), loadOrders()]);
+        await Promise.all([
+          loadProducts(), 
+          loadCategories(), 
+          loadIngredients(),
+          loadStats(), 
+          ]);
       } catch (error) {
         console.error("Error cargando datos iniciales:", error);
         // No hacemos nada, permitimos que la app cargue aunque falle algo
@@ -112,9 +136,10 @@ function App() {
     await api.post('/ingredients', {
       name: newIngredient.name,
       unit: newIngredient.unit,
-      stock: parseFloat(newIngredient.stock)
+      stock: parseFloat(newIngredient.stock),
+      cost: parseFloat(newIngredient.cost)
     });
-    setNewIngredient({ name: '', unit: '', stock: '' });
+    setNewIngredient({ name: '', unit: '', stock: '', cost: '' });
     loadIngredients();
     alert('Ingrediente agregado al almacén');
   };
@@ -178,10 +203,68 @@ function App() {
         </button>
       </div>
 
-       {/* VISTA: HISTORIAL DE VENTAS */}
+            {/* VISTA: HISTORIAL DE VENTAS */}
       {view === 'history' && (
         <div>
           <h2>🕒 Historial de Ventas</h2>
+          
+          {/* --- SELECTORES DE FECHA --- */}
+          <div style={{ background: '#f8f9fa', padding: '15px', borderRadius: '8px', marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <label style={{fontWeight: 'bold'}}>Desde:</label>
+            <input 
+              type="date" 
+              value={dateFilter.start} 
+              onChange={e => setDateFilter({...dateFilter, start: e.target.value})} 
+              style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+            
+            <label style={{fontWeight: 'bold', marginLeft: '10px'}}>Hasta:</label>
+            <input 
+              type="date" 
+              value={dateFilter.end} 
+              onChange={e => setDateFilter({...dateFilter, end: e.target.value})} 
+              style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+            
+            <button 
+              onClick={() => loadStats()} 
+              style={{ padding: '5px 15px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Filtrar 📊
+            </button>
+            
+            <button 
+              onClick={() => { setDateFilter({start: '', end: ''}); loadStats(); }} 
+              style={{ padding: '5px 15px', background: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Limpiar
+            </button>
+          </div>
+          
+          {/* --- TARJETA DE RESUMEN (DASHBOARD) --- */}
+          <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, background: '#d4edda', color: '#155724', padding: '20px', borderRadius: '10px', border: '1px solid #c3e6cb', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Ingresos (Ventas)</div>
+              <div style={{ fontSize: '2.5em', fontWeight: 'bold' }}>${stats.totalRevenue.toFixed(2)}</div>
+            </div>
+
+            <div style={{ flex: 1, background: '#f8d7da', color: '#721c24', padding: '20px', borderRadius: '10px', border: '1px solid #f5c6cb', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Costo (Ingredientes)</div>
+              <div style={{ fontSize: '2.5em', fontWeight: 'bold' }}>- ${stats.totalCost.toFixed(2)}</div>
+            </div>
+
+            <div style={{ flex: 1, background: '#cce5ff', color: '#004085', padding: '20px', borderRadius: '10px', border: '1px solid #b8daff', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>GANANCIA NETA</div>
+              <div style={{ fontSize: '2.5em', fontWeight: 'bold' }}>${stats.totalProfit.toFixed(2)}</div>
+            </div>
+
+            <div style={{ flex: 1, background: '#e2e3e5', color: '#383d41', padding: '20px', borderRadius: '10px', border: '1px solid #d6d8db', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Órdenes</div>
+              <div style={{ fontSize: '2.5em', fontWeight: 'bold' }}>{stats.totalOrders}</div>
+            </div>
+          </div>
+
+          {/* --- TABLA --- */}
           <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
             <thead>
               <tr style={{ background: '#f8f9fa', textAlign: 'left' }}>
@@ -210,7 +293,6 @@ function App() {
           </table>
         </div>
       )}
-
       {/* VISTA: MENÚ */}
       {view === 'menu' && (
         <div>
@@ -273,6 +355,7 @@ function App() {
             <form onSubmit={handleCreateIngredient} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               <input placeholder="Nombre (ej. Pan)" value={newIngredient.name} onChange={e => setNewIngredient({...newIngredient, name: e.target.value})} required style={inputStyle} />
               <input placeholder="Unidad (ej. Unidades, Kg)" value={newIngredient.unit} onChange={e => setNewIngredient({...newIngredient, unit: e.target.value})} required style={inputStyle} />
+              <input type="number" placeholder="Costo Unitario ($)" value={newIngredient.cost} onChange={e => setNewIngredient({...newIngredient, cost: e.target.value})} required step="0.01" style={inputStyle} />
               <input type="number" placeholder="Cantidad Inicial" value={newIngredient.stock} onChange={e => setNewIngredient({...newIngredient, stock: e.target.value})} required style={inputStyle} />
               <button type="submit" style={{...btnStyle, background: '#28a745'}}>Ingresar</button>
             </form>

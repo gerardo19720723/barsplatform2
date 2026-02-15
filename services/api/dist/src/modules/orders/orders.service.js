@@ -29,6 +29,37 @@ let OrdersService = class OrdersService {
             orderBy: { createdAt: 'desc' }
         });
     }
+    async getStats(user, startDate, endDate) {
+        const dateFilter = {};
+        if (startDate)
+            dateFilter.gte = new Date(startDate);
+        if (endDate) {
+            const end = new Date(endDate);
+            end.setDate(end.getDate() + 1);
+            dateFilter.lt = end;
+        }
+        const result = await this.prisma.order.aggregate({
+            where: {
+                tenantId: user.tenantId,
+                createdAt: dateFilter
+            },
+            _sum: {
+                total: true,
+                totalCost: true
+            },
+            _count: {
+                id: true,
+            },
+        });
+        const revenue = result._sum.total || 0;
+        const cost = result._sum.totalCost || 0;
+        return {
+            totalRevenue: revenue,
+            totalCost: cost,
+            totalProfit: revenue - cost,
+            totalOrders: result._count.id || 0,
+        };
+    }
 };
 exports.OrdersService = OrdersService;
 exports.OrdersService = OrdersService = __decorate([

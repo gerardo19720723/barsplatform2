@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../../guards/roles.guard';
 import { Roles } from '../../guards/roles.decorator';
 import { CurrentUser } from '../../decorators/current-user.decorator';
+import { CreateIngredientDto } from './dto/create-ingredient.dto';
 
 @Controller('ingredients')
 export class IngredientsController {
@@ -12,8 +13,8 @@ export class IngredientsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('OWNER', 'ADMIN')
-  create(@Body() body: { name: string; unit: string; stock: number }, @CurrentUser() user: any) {
-    return this.ingredientsService.create(user, body);
+  create(@Body() createIngredientDto: CreateIngredientDto, @CurrentUser() user: any) {
+    return this.ingredientsService.create(user, createIngredientDto);
   }
 
   @Get()

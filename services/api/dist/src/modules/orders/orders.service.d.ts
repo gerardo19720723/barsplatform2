@@ -14,15 +14,22 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            price: number;
-            quantity: number;
-            productId: string;
             orderId: string;
+            productId: string;
+            quantity: number;
+            price: number;
         })[];
     } & {
         id: string;
+        total: number;
+        totalCost: number;
         tenantId: string;
         createdAt: Date;
-        total: number;
     })[]>;
+    getStats(user: any, startDate?: string, endDate?: string): Promise<{
+        totalRevenue: number;
+        totalCost: number;
+        totalProfit: number;
+        totalOrders: number;
+    }>;
 }

@@ -59,10 +59,8 @@ export class ProductsService {
       },
     });
   }
-    // Vender un producto (Restar stock + Guardar Historial)
-  async sellProduct(productId: string) {
+    async sellProduct(productId: string) {
     return this.prisma.$transaction(async (tx) => {
-      // 1. Obtener el producto con su receta
       const product = await tx.product.findUnique({
         where: { id: productId },
         include: {
@@ -72,7 +70,9 @@ export class ProductsService {
 
       if (!product) throw new Error('Producto no encontrado');
 
-      // 2. Verificar y descontar Stock
+      // --- NUEVO: Calcular Costo de la Orden ---
+      let orderCost = 0;
+
       for (const item of product.ingredients) {
         const currentIngredient = await tx.ingredient.findUnique({
           where: { id: item.ingredientId }
@@ -80,8 +80,11 @@ export class ProductsService {
 
         if (!currentIngredient) continue;
 
-        const newStock = currentIngredient.stock - item.quantity;
+        // Acumulamos el costo: (Cantidad usada en receta * Costo unitario del ingrediente)
+        orderCost += (item.quantity * currentIngredient.cost);
 
+        // Lógica de Stock (sigue igual)
+        const newStock = currentIngredient.stock - item.quantity;
         if (newStock < 0) {
           throw new BadRequestException(
             `Stock insuficiente para: ${currentIngredient.name}. (Quedan ${currentIngredient.stock})`
@@ -94,16 +97,17 @@ export class ProductsService {
         });
       }
 
-      // 3. ✅ NUEVO: Crear el Registro de Venta (Order)
+      // Crear la orden guardando EL COSTO calculado
       const order = await tx.order.create({
         data: {
-          total: product.price, // Por ahora vendemos 1 unidad a la vez
-          tenantId: product.tenantId, // Asumimos que el producto ya tiene el tenantId correcto
+          total: product.price,
+          totalCost: orderCost, // <--- GUARDAMOS EL COSTO
+          tenantId: product.tenantId,
           items: {
             create: {
               productId: product.id,
               quantity: 1,
-              price: product.price // Guardamos el precio histórico
+              price: product.price
             }
           }
         }

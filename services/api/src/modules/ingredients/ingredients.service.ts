@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-// Asegúrate de que la ruta al DTO sea correcta según donde lo hayas puesto
 import { CreateIngredientDto } from './dto/create-ingredient.dto'; 
 
 @Injectable()
@@ -13,6 +12,7 @@ export class IngredientsService {
         name: createIngredientDto.name,
         unit: createIngredientDto.unit,
         stock: createIngredientDto.stock,
+        cost: createIngredientDto.cost,
         tenantId: user.tenantId,
       },
     });
