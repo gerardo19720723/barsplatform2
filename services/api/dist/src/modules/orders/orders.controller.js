@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const orders_service_1 = require("./orders.service");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const current_user_decorator_1 = require("../../decorators/current-user.decorator");
+const create_order_dto_1 = require("./dto/create-order.dto");
+const roles_decorator_1 = require("../../guards/roles.decorator");
 let OrdersController = class OrdersController {
     constructor(ordersService) {
         this.ordersService = ordersService;
@@ -26,6 +28,9 @@ let OrdersController = class OrdersController {
     }
     getStats(user, startDate, endDate) {
         return this.ordersService.getStats(user, startDate, endDate);
+    }
+    create(createOrderDto, user) {
+        return this.ordersService.createOrder(user, createOrderDto);
     }
 };
 exports.OrdersController = OrdersController;
@@ -47,6 +52,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, roles_decorator_1.Roles)('OWNER', 'ADMIN', 'STAFF'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_order_dto_1.CreateOrderDto, Object]),
+    __metadata("design:returntype", void 0)
+], OrdersController.prototype, "create", null);
 exports.OrdersController = OrdersController = __decorate([
     (0, common_1.Controller)('orders'),
     __metadata("design:paramtypes", [orders_service_1.OrdersService])

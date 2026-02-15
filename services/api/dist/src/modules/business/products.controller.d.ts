@@ -5,42 +5,42 @@ export declare class ProductsController {
     constructor(productsService: ProductsService);
     create(createProductDto: CreateProductDto, user: any): Promise<{
         id: string;
+        tenantId: string;
+        createdAt: Date;
         name: string;
         price: number;
-        createdAt: Date;
         categoryId: string | null;
-        tenantId: string;
     }>;
     findAll(user: any): Promise<({
         category: {
             id: string;
-            name: string;
-            createdAt: Date;
             tenantId: string;
+            createdAt: Date;
+            name: string;
             icon: string | null;
         };
         ingredients: ({
             ingredient: {
                 id: string;
-                name: string;
                 tenantId: string;
+                name: string;
                 unit: string;
                 stock: number;
                 cost: number;
             };
         } & {
             id: string;
+            quantity: number;
             productId: string;
             ingredientId: string;
-            quantity: number;
         })[];
     } & {
         id: string;
+        tenantId: string;
+        createdAt: Date;
         name: string;
         price: number;
-        createdAt: Date;
         categoryId: string | null;
-        tenantId: string;
     })[]>;
     addIngredient(productId: string, body: {
         ingredientId: string;
@@ -48,17 +48,17 @@ export declare class ProductsController {
     }): Promise<{
         ingredient: {
             id: string;
-            name: string;
             tenantId: string;
+            name: string;
             unit: string;
             stock: number;
             cost: number;
         };
     } & {
         id: string;
+        quantity: number;
         productId: string;
         ingredientId: string;
-        quantity: number;
     }>;
     removeIngredientFromRecipe(body: {
         productId: string;

@@ -1,4 +1,5 @@
 import { OrdersService } from './orders.service';
+import { CreateOrderDto } from './dto/create-order.dto';
 export declare class OrdersController {
     private readonly ordersService;
     constructor(ordersService: OrdersService);
@@ -21,6 +22,7 @@ export declare class OrdersController {
         })[];
     } & {
         id: string;
+        tableNumber: string;
         total: number;
         totalCost: number;
         tenantId: string;
@@ -31,5 +33,21 @@ export declare class OrdersController {
         totalCost: number;
         totalProfit: number;
         totalOrders: number;
+    }>;
+    create(createOrderDto: CreateOrderDto, user: any): Promise<{
+        items: {
+            id: string;
+            orderId: string;
+            productId: string;
+            quantity: number;
+            price: number;
+        }[];
+    } & {
+        id: string;
+        tableNumber: string;
+        total: number;
+        totalCost: number;
+        tenantId: string;
+        createdAt: Date;
     }>;
 }

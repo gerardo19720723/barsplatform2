@@ -1,7 +1,9 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../../decorators/current-user.decorator';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { Roles } from '@/guards/roles.decorator';
 
 @Controller('orders')
 export class OrdersController {
@@ -22,4 +24,11 @@ export class OrdersController {
   ) {
     return this.ordersService.getStats(user, startDate, endDate);
   }
+
+  @Post()
+    @UseGuards(JwtAuthGuard)
+    @Roles('OWNER', 'ADMIN', 'STAFF') // Staff también puede crear órdenes
+    create(@Body() createOrderDto: CreateOrderDto, @CurrentUser() user: any) {
+      return this.ordersService.createOrder(user, createOrderDto);
+    }
 }

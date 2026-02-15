@@ -5,26 +5,26 @@ export declare class IngredientsService {
     constructor(prisma: PrismaService);
     create(user: any, createIngredientDto: CreateIngredientDto): import(".prisma/client").Prisma.Prisma__IngredientClient<{
         id: string;
+        tenantId: string;
         name: string;
         unit: string;
         stock: number;
         cost: number;
-        tenantId: string;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
     findAll(user: any): import(".prisma/client").Prisma.PrismaPromise<{
         id: string;
+        tenantId: string;
         name: string;
         unit: string;
         stock: number;
         cost: number;
-        tenantId: string;
     }[]>;
     updateStock(id: string, quantityToSubtract: number): import(".prisma/client").Prisma.Prisma__IngredientClient<{
         id: string;
+        tenantId: string;
         name: string;
         unit: string;
         stock: number;
         cost: number;
-        tenantId: string;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
 }

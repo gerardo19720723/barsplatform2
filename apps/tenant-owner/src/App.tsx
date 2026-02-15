@@ -244,17 +244,17 @@ function App() {
           {/* --- TARJETA DE RESUMEN (DASHBOARD) --- */}
           <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, background: '#d4edda', color: '#155724', padding: '20px', borderRadius: '10px', border: '1px solid #c3e6cb', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Ingresos (Ventas)</div>
+              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Ingresos</div>
               <div style={{ fontSize: '2.5em', fontWeight: 'bold' }}>${stats.totalRevenue.toFixed(2)}</div>
             </div>
 
             <div style={{ flex: 1, background: '#f8d7da', color: '#721c24', padding: '20px', borderRadius: '10px', border: '1px solid #f5c6cb', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Costo (Ingredientes)</div>
+              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Costo</div>
               <div style={{ fontSize: '2.5em', fontWeight: 'bold' }}>- ${stats.totalCost.toFixed(2)}</div>
             </div>
 
             <div style={{ flex: 1, background: '#cce5ff', color: '#004085', padding: '20px', borderRadius: '10px', border: '1px solid #b8daff', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>GANANCIA NETA</div>
+              <div style={{ fontSize: '0.9em', textTransform: 'uppercase', letterSpacing: '1px' }}>Ganancia</div>
               <div style={{ fontSize: '2.5em', fontWeight: 'bold' }}>${stats.totalProfit.toFixed(2)}</div>
             </div>
 
@@ -265,27 +265,32 @@ function App() {
           </div>
 
           {/* --- TABLA --- */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
+         <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
             <thead>
               <tr style={{ background: '#f8f9fa', textAlign: 'left' }}>
-                <th style={thStyle}>Fecha</th>
-                <th style={thStyle}>Producto</th>
-                <th style={thStyle}>Cantidad</th>
-                <th style={thStyle}>Total</th>
+                <th style={{...thStyle, color: '#000'}}>Fecha</th>
+                <th style={{...thStyle, color: '#000'}}>Producto</th>
+                <th style={{...thStyle, color: '#000'}}>Cantidad</th>
+                <th style={{...thStyle, color: '#000'}}>Total</th>
               </tr>
             </thead>
             <tbody>
               {orders.length === 0 ? (
-                <tr><td colSpan={4} style={{textAlign: 'center', padding: '20px'}}>No hay ventas registradas aún.</td></tr>
+                <tr><td colSpan={4} style={{textAlign: 'center', padding: '20px', color: '#000'}}>No hay ventas registradas aún.</td></tr>
               ) : (
                 orders.map(order => (
                   <tr key={order.id} style={{ borderBottom: '1px solid #eee' }}>
-                    <td style={tdStyle}>{new Date(order.createdAt).toLocaleString()}</td>
-                    <td style={tdStyle}>
+                    {/* Forzamos color negro en todas las celdas */}
+                    <td style={{...tdStyle, color: '#000'}}>{new Date(order.createdAt).toLocaleString()}</td>
+                    <td style={{...tdStyle, color: '#000'}}>
                       {order.items.map(item => item.product.name).join(', ')}
                     </td>
-                    <td style={tdStyle}>{order.items.reduce((acc, item) => acc + item.quantity, 0)}</td>
-                    <td style={{...tdStyle, fontWeight: 'bold', color: 'green'}}>${order.total.toFixed(2)}</td>
+                    <td style={{...tdStyle, color: '#000'}}>
+                      {order.items.reduce((acc, item) => acc + item.quantity, 0)}
+                    </td>
+                    <td style={{...tdStyle, fontWeight: 'bold', color: '#008000' }}>
+                      ${order.total.toFixed(2)}
+                    </td>
                   </tr>
                 ))
               )}
@@ -293,6 +298,7 @@ function App() {
           </table>
         </div>
       )}
+         
       {/* VISTA: MENÚ */}
       {view === 'menu' && (
         <div>

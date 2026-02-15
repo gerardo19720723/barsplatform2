@@ -1,4 +1,5 @@
 import { PrismaService } from '../../prisma/prisma.service';
+import { CreateOrderDto } from './dto/create-order.dto';
 export declare class OrdersService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -21,6 +22,7 @@ export declare class OrdersService {
         })[];
     } & {
         id: string;
+        tableNumber: string;
         total: number;
         totalCost: number;
         tenantId: string;
@@ -31,5 +33,21 @@ export declare class OrdersService {
         totalCost: number;
         totalProfit: number;
         totalOrders: number;
+    }>;
+    createOrder(user: any, createOrderDto: CreateOrderDto): Promise<{
+        items: {
+            id: string;
+            orderId: string;
+            productId: string;
+            quantity: number;
+            price: number;
+        }[];
+    } & {
+        id: string;
+        tableNumber: string;
+        total: number;
+        totalCost: number;
+        tenantId: string;
+        createdAt: Date;
     }>;
 }
