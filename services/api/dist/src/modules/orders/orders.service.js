@@ -112,6 +112,12 @@ let OrdersService = class OrdersService {
             return order;
         });
     }
+    updateStatus(orderId, status) {
+        return this.prisma.order.update({
+            where: { id: orderId },
+            data: { status: status }
+        });
+    }
 };
 exports.OrdersService = OrdersService;
 exports.OrdersService = OrdersService = __decorate([

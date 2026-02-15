@@ -32,6 +32,9 @@ let OrdersController = class OrdersController {
     create(createOrderDto, user) {
         return this.ordersService.createOrder(user, createOrderDto);
     }
+    updateStatus(id, body) {
+        return this.ordersService.updateStatus(id, body.status);
+    }
 };
 exports.OrdersController = OrdersController;
 __decorate([
@@ -62,6 +65,15 @@ __decorate([
     __metadata("design:paramtypes", [create_order_dto_1.CreateOrderDto, Object]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "create", null);
+__decorate([
+    (0, common_1.Patch)(':id/status'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], OrdersController.prototype, "updateStatus", null);
 exports.OrdersController = OrdersController = __decorate([
     (0, common_1.Controller)('orders'),
     __metadata("design:paramtypes", [orders_service_1.OrdersService])

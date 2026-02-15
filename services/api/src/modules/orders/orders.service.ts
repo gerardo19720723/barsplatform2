@@ -117,4 +117,12 @@ export class OrdersService {
       return order;
     });
   }
+
+    // Estado de la orden (PENDING -> READY -> SERVED)
+  updateStatus(orderId: string, status: string) {
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: status }
+    });
+  }
 }

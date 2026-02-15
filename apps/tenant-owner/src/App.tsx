@@ -102,6 +102,7 @@ function App() {
           loadProducts(), 
           loadCategories(), 
           loadIngredients(),
+          loadOrders(),
           loadStats(), 
           ]);
       } catch (error) {

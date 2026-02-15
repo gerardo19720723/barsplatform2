@@ -110,6 +110,7 @@ model Product {
 model Order {
   id        String      @id @default(cuid())
   tableNumber String    @default("Counter")
+  status      String      @default("PENDING")
   total     Float       // Total de la venta
   totalCost Float       @default(0) // Costo de ingredientes usados
   tenantId  String

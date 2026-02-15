@@ -23,6 +23,7 @@ export declare class OrdersController {
     } & {
         id: string;
         tableNumber: string;
+        status: string;
         total: number;
         totalCost: number;
         tenantId: string;
@@ -45,9 +46,21 @@ export declare class OrdersController {
     } & {
         id: string;
         tableNumber: string;
+        status: string;
         total: number;
         totalCost: number;
         tenantId: string;
         createdAt: Date;
     }>;
+    updateStatus(id: string, body: {
+        status: string;
+    }): import(".prisma/client").Prisma.Prisma__OrderClient<{
+        id: string;
+        tableNumber: string;
+        status: string;
+        total: number;
+        totalCost: number;
+        tenantId: string;
+        createdAt: Date;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs>;
 }

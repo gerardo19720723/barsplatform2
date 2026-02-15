@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../../decorators/current-user.decorator';
@@ -31,4 +31,13 @@ export class OrdersController {
     create(@Body() createOrderDto: CreateOrderDto, @CurrentUser() user: any) {
       return this.ordersService.createOrder(user, createOrderDto);
     }
+
+  @Patch(':id/status')
+  @UseGuards(JwtAuthGuard)
+  updateStatus(
+  @Param('id') id: string, 
+  @Body() body: { status: string }
+  ) {
+    return this.ordersService.updateStatus(id, body.status);
+  }
 }
